@@ -2,37 +2,113 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Formulario Caída Libre</title>
+  <title>Formulario de Caída Libre</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body { font-family: Arial, sans-serif; background: #f8fafc; display: flex; justify-content: center; align-items: center; height: 100vh;}
-    .form-box { background: #fff; padding: 2rem 2.5rem; border-radius: 1rem; box-shadow: 0 4px 18px rgba(0,0,0,0.07); }
-    h2 { margin-bottom: 1rem; }
-    label { display: block; margin-top: 1rem; }
-    input, textarea { width: 100%; padding: .5rem; margin-top: .2rem; border: 1px solid #ccc; border-radius: .5rem;}
-    button { background: #007bff; color: white; border: none; padding: .7rem 1.5rem; border-radius: .5rem; margin-top: 1.5rem; cursor: pointer;}
-    #respuesta { margin-top: 1rem; }
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #e0e7ff 0%, #f1f5f9 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+      margin: 0;
+    }
+    .container {
+      background: #fff;
+      border-radius: 1.2rem;
+      box-shadow: 0 6px 32px 0 rgba(60,60,90,0.11);
+      max-width: 380px;
+      padding: 2.2rem 2rem 2rem 2rem;
+      width: 100%;
+    }
+    h2 {
+      margin: 0 0 .3em 0;
+      color: #3b3b5c;
+      text-align: center;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+    .instructions {
+      font-size: .97em;
+      color: #555;
+      background: #f3f6fb;
+      border-radius: .6rem;
+      padding: .8em 1em;
+      margin-bottom: 1.5em;
+      text-align: center;
+    }
+    label {
+      display: block;
+      margin-bottom: .5em;
+      font-weight: 500;
+      color: #374151;
+    }
+    input, textarea {
+      width: 100%;
+      border: 1.5px solid #c7d2fe;
+      border-radius: .6rem;
+      padding: .7em;
+      margin-bottom: 1em;
+      font-size: 1em;
+      outline: none;
+      background: #f8fafc;
+      transition: border 0.2s;
+    }
+    input:focus, textarea:focus {
+      border: 2px solid #6366f1;
+    }
+    button {
+      width: 100%;
+      background: linear-gradient(90deg, #6366f1 50%, #60a5fa 100%);
+      color: #fff;
+      border: none;
+      border-radius: .6rem;
+      padding: .85em;
+      font-size: 1.13em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .2s, transform .1s;
+      box-shadow: 0 3px 10px rgba(99,102,241,0.10);
+      margin-top: .2em;
+    }
+    button:hover {
+      background: linear-gradient(90deg, #818cf8 40%, #38bdf8 100%);
+      transform: scale(1.03);
+    }
+    #respuesta {
+      text-align: center;
+      margin-top: 1.1em;
+      font-size: 1.06em;
+      color: #059669;
+      min-height: 2em;
+    }
   </style>
 </head>
 <body>
-  <div class="form-box">
-    <h2>Reporte de Caída Libre</h2>
-    <form id="caidaLibreForm">
+  <div class="container">
+    <h2>Práctica: Caída Libre</h2>
+    <div class="instructions">
+      Completa el formulario con los datos de tu experimento.<br>
+      Al enviar, tus respuestas se guardarán automáticamente.
+    </div>
+    <form id="caidaLibreForm" autocomplete="off">
       <label>Nombre:
-        <input name="nombre" required>
+        <input name="nombre" placeholder="Tu nombre completo" required>
       </label>
-      <label>Altura desde la que se deja caer el objeto (m):
-        <input name="altura" type="number" step="0.01" required>
+      <label>Altura (m):
+        <input name="altura" type="number" step="0.01" placeholder="Ej: 2.30" required>
       </label>
       <label>Tiempo de caída (s):
-        <input name="tiempo" type="number" step="0.01" required>
+        <input name="tiempo" type="number" step="0.01" placeholder="Ej: 0.68" required>
       </label>
       <label>Aceleración calculada (m/s²):
-        <input name="aceleracion" type="number" step="0.01" required>
+        <input name="aceleracion" type="number" step="0.01" placeholder="Ej: 9.87" required>
       </label>
       <label>Observaciones:
-        <textarea name="observaciones"></textarea>
+        <textarea name="observaciones" rows="2" placeholder="Ej: Cronómetro, viento, errores de medición, etc."></textarea>
       </label>
-      <button type="submit">Enviar</button>
+      <button type="submit">Enviar datos</button>
     </form>
     <div id="respuesta"></div>
   </div>
@@ -46,16 +122,16 @@
         aceleracion: this.aceleracion.value,
         observaciones: this.observaciones.value
       };
-      fetch('https://script.google.com/macros/s/AKfycbyvjZ9v5y0dBMNkFJbMPcvMTl4QTZa3PT6jtmBLgRbELV56ytWA_RAfcDW-6kH1oA3sIg/exec', { // ← Pon aquí la URL de tu Apps Script
+      fetch('https://script.google.com/macros/s/AKfycbyvjZ9v5y0dBMNkFJbMPcvMTl4QTZa3PT6jtmBLgRbELV56ytWA_RAfcDW-6kH1oA3sIg/exec', { // ← Pega aquí la URL de tu Apps Script
         method: 'POST',
         body: JSON.stringify(datos),
         headers: { 'Content-Type': 'application/json' }
       })
       .then(r => r.text())
       .then(txt => {
-        document.getElementById('respuesta').innerText = txt == 'OK'
-          ? "¡Enviado correctamente! Puedes cerrar esta ventana."
-          : "Error al enviar: " + txt;
+        document.getElementById('respuesta').innerText = 
+          txt == 'OK' ? "¡Enviado correctamente! ✅" : "Error al enviar: " + txt;
+        if (txt == 'OK') document.getElementById('caidaLibreForm').reset();
       });
     };
   </script>
