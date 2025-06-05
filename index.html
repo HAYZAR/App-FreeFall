@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Formulario Caída Libre</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f8fafc; display: flex; justify-content: center; align-items: center; height: 100vh;}
+    .form-box { background: #fff; padding: 2rem 2.5rem; border-radius: 1rem; box-shadow: 0 4px 18px rgba(0,0,0,0.07); }
+    h2 { margin-bottom: 1rem; }
+    label { display: block; margin-top: 1rem; }
+    input, textarea { width: 100%; padding: .5rem; margin-top: .2rem; border: 1px solid #ccc; border-radius: .5rem;}
+    button { background: #007bff; color: white; border: none; padding: .7rem 1.5rem; border-radius: .5rem; margin-top: 1.5rem; cursor: pointer;}
+    #respuesta { margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <div class="form-box">
+    <h2>Reporte de Caída Libre</h2>
+    <form id="caidaLibreForm">
+      <label>Nombre:
+        <input name="nombre" required>
+      </label>
+      <label>Altura desde la que se deja caer el objeto (m):
+        <input name="altura" type="number" step="0.01" required>
+      </label>
+      <label>Tiempo de caída (s):
+        <input name="tiempo" type="number" step="0.01" required>
+      </label>
+      <label>Aceleración calculada (m/s²):
+        <input name="aceleracion" type="number" step="0.01" required>
+      </label>
+      <label>Observaciones:
+        <textarea name="observaciones"></textarea>
+      </label>
+      <button type="submit">Enviar</button>
+    </form>
+    <div id="respuesta"></div>
+  </div>
+  <script>
+    document.getElementById('caidaLibreForm').onsubmit = function(e){
+      e.preventDefault();
+      var datos = {
+        nombre: this.nombre.value,
+        altura: this.altura.value,
+        tiempo: this.tiempo.value,
+        aceleracion: this.aceleracion.value,
+        observaciones: this.observaciones.value
+      };
+      fetch('https://script.google.com/macros/s/AKfycbyvjZ9v5y0dBMNkFJbMPcvMTl4QTZa3PT6jtmBLgRbELV56ytWA_RAfcDW-6kH1oA3sIg/exec', { // ← Pon aquí la URL de tu Apps Script
+        method: 'POST',
+        body: JSON.stringify(datos),
+        headers: { 'Content-Type': 'application/json' }
+      })
+      .then(r => r.text())
+      .then(txt => {
+        document.getElementById('respuesta').innerText = txt == 'OK'
+          ? "¡Enviado correctamente! Puedes cerrar esta ventana."
+          : "Error al enviar: " + txt;
+      });
+    };
+  </script>
+</body>
+</html>
