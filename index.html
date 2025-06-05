@@ -2,31 +2,27 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Formulario de Caída Libre</title>
+  <title>Simulador de Caída Libre</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     body {
-      min-height: 100vh;
       background: linear-gradient(135deg, #e0e7ff 0%, #f1f5f9 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+      min-height: 100vh;
       margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      display: flex; justify-content: center; align-items: center;
     }
     .container {
       background: #fff;
       border-radius: 1.2rem;
       box-shadow: 0 6px 32px 0 rgba(60,60,90,0.11);
-      max-width: 380px;
+      max-width: 410px;
       padding: 2.2rem 2rem 2rem 2rem;
       width: 100%;
     }
     h2 {
-      margin: 0 0 .3em 0;
-      color: #3b3b5c;
-      text-align: center;
-      font-weight: 600;
+      margin-top: 0; margin-bottom: .3em;
+      color: #3b3b5c; text-align: center; font-weight: 600;
       letter-spacing: 0.04em;
     }
     .instructions {
@@ -38,101 +34,199 @@
       margin-bottom: 1.5em;
       text-align: center;
     }
-    label {
-      display: block;
-      margin-bottom: .5em;
-      font-weight: 500;
-      color: #374151;
-    }
-    input, textarea {
+    label { font-weight: 500; color: #374151; display: block; margin-bottom: .5em;}
+    select, input {
       width: 100%;
       border: 1.5px solid #c7d2fe;
       border-radius: .6rem;
       padding: .7em;
       margin-bottom: 1em;
       font-size: 1em;
-      outline: none;
       background: #f8fafc;
       transition: border 0.2s;
     }
-    input:focus, textarea:focus {
-      border: 2px solid #6366f1;
-    }
+    select:focus, input:focus { border: 2px solid #6366f1; }
     button {
       width: 100%;
       background: linear-gradient(90deg, #6366f1 50%, #60a5fa 100%);
       color: #fff;
-      border: none;
-      border-radius: .6rem;
+      border: none; border-radius: .6rem;
       padding: .85em;
       font-size: 1.13em;
       font-weight: 600;
       cursor: pointer;
       transition: background .2s, transform .1s;
-      box-shadow: 0 3px 10px rgba(99,102,241,0.10);
       margin-top: .2em;
     }
-    button:hover {
-      background: linear-gradient(90deg, #818cf8 40%, #38bdf8 100%);
-      transform: scale(1.03);
-    }
-    #respuesta {
-      text-align: center;
-      margin-top: 1.1em;
-      font-size: 1.06em;
-      color: #059669;
-      min-height: 2em;
-    }
+    button:hover { background: linear-gradient(90deg, #818cf8 40%, #38bdf8 100%); transform: scale(1.03);}
+    .result { background: #e0fce8; color: #134e20; border-radius: .5rem; margin-bottom: 1em; padding: .7em 1em; }
+    #respuesta { text-align: center; margin-top: 1.1em; font-size: 1.06em; color: #059669; min-height: 2em; }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>Práctica: Caída Libre</h2>
+    <h2>Simulador de Caída Libre</h2>
     <div class="instructions">
-      Completa el formulario con los datos de tu experimento.<br>
-      Al enviar, tus respuestas se guardarán automáticamente.
+      Elige qué quieres calcular y completa los campos.<br>
+      El resultado aparecerá automáticamente.
     </div>
-    <form id="caidaLibreForm" autocomplete="off">
+    <form id="freeFallForm" autocomplete="off">
       <label>Nombre:
         <input name="nombre" placeholder="Tu nombre completo" required>
       </label>
-      <label>Altura (m):
-        <input name="altura" type="number" step="0.01" placeholder="Ej: 2.30" required>
+      <label>¿Qué deseas calcular?
+        <select id="calculo" name="calculo">
+          <option value="desplazamiento">Desplazamiento</option>
+          <option value="velocidad">Velocidad final</option>
+        </select>
       </label>
-      <label>Tiempo de caída (s):
-        <input name="tiempo" type="number" step="0.01" placeholder="Ej: 0.68" required>
-      </label>
-      <label>Aceleración calculada (m/s²):
-        <input name="aceleracion" type="number" step="0.01" placeholder="Ej: 9.87" required>
-      </label>
-      <label>Observaciones:
-        <textarea name="observaciones" rows="2" placeholder="Ej: Cronómetro, viento, errores de medición, etc."></textarea>
-      </label>
+      <div id="campos-desplazamiento">
+        <label>Tiempo de caída (s):
+          <select name="tiempo" id="tiempo">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
+        </label>
+        <label>Velocidad inicial (m/s):
+          <select name="velocidad_inicial" id="velocidad_inicial">
+            <!-- Opciones generadas por JS -->
+          </select>
+        </label>
+        <label>Aceleración (m/s², usualmente g=9.8):
+          <input name="aceleracion" id="aceleracion" type="number" value="9.8" step="0.1" required>
+        </label>
+      </div>
+      <div id="campos-velocidad" style="display:none;">
+        <label>Desplazamiento (m):
+          <select name="desplazamiento" id="desplazamiento">
+            <!-- Opciones generadas por JS -->
+          </select>
+        </label>
+        <label>Tiempo de caída (s):
+          <select name="tiempo2" id="tiempo2">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
+        </label>
+        <label>Velocidad inicial (m/s):
+          <select name="velocidad_inicial2" id="velocidad_inicial2">
+            <!-- Opciones generadas por JS -->
+          </select>
+        </label>
+        <label>Aceleración (m/s², usualmente g=9.8):
+          <input name="aceleracion2" id="aceleracion2" type="number" value="9.8" step="0.1" required>
+        </label>
+      </div>
+      <div id="resultado" class="result" style="display:none;"></div>
       <button type="submit">Enviar datos</button>
     </form>
     <div id="respuesta"></div>
   </div>
   <script>
-    document.getElementById('caidaLibreForm').onsubmit = function(e){
+    // Generar opciones de velocidad inicial
+    function generaOpcionesVelocidad(id) {
+      const select = document.getElementById(id);
+      select.innerHTML = '';
+      for(let v = -30; v <= 30; v += 5){
+        let txt = (v>0?'+':'') + v + ' m/s';
+        select.innerHTML += `<option value="${v}">${txt}</option>`;
+      }
+    }
+    generaOpcionesVelocidad('velocidad_inicial');
+    generaOpcionesVelocidad('velocidad_inicial2');
+    // Opciones de desplazamiento
+    const selDespl = document.getElementById('desplazamiento');
+    for(let x = 0; x <= 100; x += 5){
+      selDespl.innerHTML += `<option value="${x}">${x} m</option>`;
+    }
+    // Cambio de modo de cálculo
+    document.getElementById('calculo').addEventListener('change', function(){
+      if(this.value === 'desplazamiento'){
+        document.getElementById('campos-desplazamiento').style.display = '';
+        document.getElementById('campos-velocidad').style.display = 'none';
+      } else {
+        document.getElementById('campos-desplazamiento').style.display = 'none';
+        document.getElementById('campos-velocidad').style.display = '';
+      }
+      mostrarResultado();
+    });
+    // Cálculo y visualización automática
+    function mostrarResultado(){
+      const modo = document.getElementById('calculo').value;
+      let resTxt = "";
+      if(modo === 'desplazamiento'){
+        const v0 = parseFloat(document.getElementById('velocidad_inicial').value);
+        const t = parseFloat(document.getElementById('tiempo').value);
+        const a = parseFloat(document.getElementById('aceleracion').value);
+        const dx = v0 * t + 0.5 * a * t * t;
+        resTxt = `Desplazamiento: <b>${dx.toFixed(2)} m</b>`;
+      } else {
+        const v0 = parseFloat(document.getElementById('velocidad_inicial2').value);
+        const t = parseFloat(document.getElementById('tiempo2').value);
+        const a = parseFloat(document.getElementById('aceleracion2').value);
+        const dx = parseFloat(document.getElementById('desplazamiento').value);
+        // Si el tiempo es cero, la velocidad es la inicial
+        let v = v0 + a * t;
+        resTxt = `Velocidad final: <b>${v.toFixed(2)} m/s</b>`;
+      }
+      const div = document.getElementById('resultado');
+      div.innerHTML = resTxt;
+      div.style.display = "block";
+    }
+    // Actualizar resultado al cambiar cualquier campo
+    [
+      'tiempo','velocidad_inicial','aceleracion',
+      'desplazamiento','tiempo2','velocidad_inicial2','aceleracion2','calculo'
+    ].forEach(id=>{
+      document.getElementById(id).addEventListener('input', mostrarResultado);
+      document.getElementById(id).addEventListener('change', mostrarResultado);
+    });
+    // Mostrar el resultado al cargar la página
+    mostrarResultado();
+    // Envío de formulario
+    document.getElementById('freeFallForm').onsubmit = function(e){
       e.preventDefault();
-      var datos = {
+      const modo = document.getElementById('calculo').value;
+      let resultado;
+      if(modo === 'desplazamiento'){
+        const v0 = parseFloat(document.getElementById('velocidad_inicial').value);
+        const t = parseFloat(document.getElementById('tiempo').value);
+        const a = parseFloat(document.getElementById('aceleracion').value);
+        resultado = v0 * t + 0.5 * a * t * t;
+      } else {
+        const v0 = parseFloat(document.getElementById('velocidad_inicial2').value);
+        const t = parseFloat(document.getElementById('tiempo2').value);
+        const a = parseFloat(document.getElementById('aceleracion2').value);
+        resultado = v0 + a * t;
+      }
+      const datos = {
         nombre: this.nombre.value,
-        altura: this.altura.value,
-        tiempo: this.tiempo.value,
-        aceleracion: this.aceleracion.value,
-        observaciones: this.observaciones.value
+        calculo: modo,
+        tiempo: this.tiempo ? this.tiempo.value : this.tiempo2.value,
+        velocidad_inicial: this.velocidad_inicial ? this.velocidad_inicial.value : this.velocidad_inicial2.value,
+        aceleracion: this.aceleracion ? this.aceleracion.value : this.aceleracion2.value,
+        desplazamiento: this.desplazamiento ? this.desplazamiento.value : '',
+        resultado: resultado
       };
-      fetch('https://script.google.com/macros/s/AKfycbyvjZ9v5y0dBMNkFJbMPcvMTl4QTZa3PT6jtmBLgRbELV56ytWA_RAfcDW-6kH1oA3sIg/exec', { // ← Pega aquí la URL de tu Apps Script
+      fetch('https://script.google.com/macros/s/AKfycbyvjZ9v5y0dBMNkFJbMPcvMTl4QTZa3PT6jtmBLgRbELV56ytWA_RAfcDW-6kH1oA3sIg/exec', { // ← Pega aquí tu URL de Apps Script
         method: 'POST',
         body: JSON.stringify(datos),
         headers: { 'Content-Type': 'application/json' }
       })
       .then(r => r.text())
       .then(txt => {
-        document.getElementById('respuesta').innerText = 
+        document.getElementById('respuesta').innerHTML = 
           txt == 'OK' ? "¡Enviado correctamente! ✅" : "Error al enviar: " + txt;
-        if (txt == 'OK') document.getElementById('caidaLibreForm').reset();
-      });
+        if (txt == 'OK') this.reset();
+      }.bind(this));
     };
   </script>
 </body>
