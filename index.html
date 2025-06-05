@@ -127,20 +127,25 @@
   document.addEventListener("DOMContentLoaded", function() {
     // Opciones de desplazamiento (0 a 100 m en pasos de 5)
     const selDespl = document.getElementById('desplazamiento');
-    for(let x = 0; x <= 100; x += 5){
-      selDespl.innerHTML += `<option value="${x}">${x} m</option>`;
+    if(selDespl){
+      for(let x = 0; x <= 100; x += 5){
+        selDespl.innerHTML += `<option value="${x}">${x} m</option>`;
+      }
     }
     // Cambio de modo de cálculo
-    document.getElementById('calculo').addEventListener('change', function(){
-      if(this.value === 'desplazamiento'){
-        document.getElementById('campos-desplazamiento').style.display = '';
-        document.getElementById('campos-velocidad').style.display = 'none';
-      } else {
-        document.getElementById('campos-desplazamiento').style.display = 'none';
-        document.getElementById('campos-velocidad').style.display = '';
-      }
-      mostrarResultado();
-    });
+    const calcSel = document.getElementById('calculo');
+    if(calcSel){
+      calcSel.addEventListener('change', function(){
+        if(this.value === 'desplazamiento'){
+          document.getElementById('campos-desplazamiento').style.display = '';
+          document.getElementById('campos-velocidad').style.display = 'none';
+        } else {
+          document.getElementById('campos-desplazamiento').style.display = 'none';
+          document.getElementById('campos-velocidad').style.display = '';
+        }
+        mostrarResultado();
+      });
+    }
     // Cálculo y visualización automática
     function mostrarResultado(){
       const modo = document.getElementById('calculo').value;
@@ -149,25 +154,39 @@
       if(modo === 'desplazamiento'){
         const v0 = parseFloat(document.getElementById('velocidad_inicial').value);
         const t = parseFloat(document.getElementById('tiempo').value);
-        const dx = v0 * t + 0.5 * g * t * t;
-        resTxt = `Desplazamiento: <b>${dx.toFixed(2)} m</b>`;
+        if(isNaN(v0) || isNaN(t)){
+          resTxt = "";
+        } else {
+          const dx = v0 * t + 0.5 * g * t * t;
+          resTxt = `Desplazamiento: <b>${dx.toFixed(2)} m</b>`;
+        }
       } else {
         const v0 = parseFloat(document.getElementById('velocidad_inicial2').value);
         const t = parseFloat(document.getElementById('tiempo2').value);
-        const v = v0 + g * t;
-        resTxt = `Velocidad final: <b>${v.toFixed(2)} m/s</b>`;
+        if(isNaN(v0) || isNaN(t)){
+          resTxt = "";
+        } else {
+          const v = v0 + g * t;
+          resTxt = `Velocidad final: <b>${v.toFixed(2)} m/s</b>`;
+        }
       }
       const div = document.getElementById('resultado');
-      div.innerHTML = resTxt;
-      div.style.display = "block";
+      if(resTxt){
+        div.innerHTML = resTxt;
+        div.style.display = "block";
+      } else {
+        div.style.display = "none";
+      }
     }
-    // Actualizar resultado al cambiar cualquier campo
     [
       'tiempo','velocidad_inicial',
       'desplazamiento','tiempo2','velocidad_inicial2','calculo'
     ].forEach(id=>{
-      document.getElementById(id).addEventListener('input', mostrarResultado);
-      document.getElementById(id).addEventListener('change', mostrarResultado);
+      const elem = document.getElementById(id);
+      if(elem){
+        elem.addEventListener('input', mostrarResultado);
+        elem.addEventListener('change', mostrarResultado);
+      }
     });
     mostrarResultado();
     // Envío de formulario
@@ -193,7 +212,7 @@
         desplazamiento: this.desplazamiento ? this.desplazamiento.value : '',
         resultado: resultado
       };
-      fetch('TU_URL_DEL_WEBAPP', { // ← Pega aquí tu URL de Apps Script
+      fetch('https://script.google.com/macros/s/AKfycbyvjZ9v5y0dBMNkFJbMPcvMTl4QTZa3PT6jtmBLgRbELV56ytWA_RAfcDW-6kH1oA3sIg/exec', { // ← Pega aquí tu URL de Apps Script
         method: 'POST',
         body: JSON.stringify(datos),
         headers: { 'Content-Type': 'application/json' }
